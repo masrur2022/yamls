@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+        name: goang-deploy
+        labels:
+                app: testimage
+spec:
+        replicas: 2
+        selector:
+                matchLabels:
+                        app: testimage
+        template:
+                metadata:
+                        labels:
+                                app: testimage
+                spec:
+                        containers:
+                                - name: testimage
+                                  image: masrur121/testimage:latest
+                                  ports:
+                                          - containerPort: 3300
