@@ -1,19 +1,49 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: StageA
+  jobs:
+  - deployment: A1
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: env1
+    strategy:                  
+      runOnce:
+        deploy:
+          steps:
+          - bash: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the deployment variable value"
+            name: setvarStep
+          - bash: echo $(System.JobName)
+  - deployment: A2
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 
+      name: env2
+      resourceType: virtualmachine
+    strategy:                  
+      runOnce:
+        deploy:
+          steps:
+          - script: echo "##vso[task.setvariable variable=myOutputVarTwo;isOutput=true]this is the second deployment variable value"
+            name: setvarStepTwo
+  
+  - job: B1
+    dependsOn: A1
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      myVarFromDeploymentJob: $[ dependencies.A1.outputs['A1.setvarStep.myOutputVar'] ]
+      
+    steps:
+    - script: "echo $(myVarFromDeploymentJob)"
+      name: echovar
+ 
+  - job: B2
+    dependsOn: A2
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      myVarFromDeploymentJob: $[ dependencies.A2.outputs['A2.setvarStepTwo.myOutputVar'] ]
+      myOutputVarTwo: $[ dependencies.A2.outputs['Deploy_vmsfortesting.setvarStepTwo.myOutputVarTwo'] ]
+    
+    steps:
+    - script: "echo $(myOutputVarTwo)"
+      name: echovartwo
