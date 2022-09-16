@@ -23,15 +23,3 @@ stages:
     steps:
     - script: "echo $(myVarFromDeploymentJob)"
       name: echovar
- 
-  - job: B2
-    dependsOn: A2
-    pool:
-      vmImage: 'ubuntu-latest'
-    variables:
-      myVarFromDeploymentJob: $[ dependencies.A2.outputs['A2.setvarStepTwo.myOutputVar'] ]
-      myOutputVarTwo: $[ dependencies.A2.outputs['Deploy_vmsfortesting.setvarStepTwo.myOutputVarTwo'] ]
-    
-    steps:
-    - script: "echo $(myOutputVarTwo)"
-      name: echovartwo
