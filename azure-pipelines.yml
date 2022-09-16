@@ -4,7 +4,7 @@ stages:
   - deployment: A1
     pool:
       vmImage: 'ubuntu-latest'
-    environment: env1
+    environment: medcard_db
     strategy:                  
       runOnce:
         deploy:
@@ -12,18 +12,6 @@ stages:
           - bash: echo "##vso[task.setvariable variable=myOutputVar;isOutput=true]this is the deployment variable value"
             name: setvarStep
           - bash: echo $(System.JobName)
-  - deployment: A2
-    pool:
-      vmImage: 'ubuntu-latest'
-    environment: 
-      name: env2
-      resourceType: virtualmachine
-    strategy:                  
-      runOnce:
-        deploy:
-          steps:
-          - script: echo "##vso[task.setvariable variable=myOutputVarTwo;isOutput=true]this is the second deployment variable value"
-            name: setvarStepTwo
   
   - job: B1
     dependsOn: A1
