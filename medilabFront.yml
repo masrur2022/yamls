@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+        name: medilab-front
+        labels:
+                app: medilab-front
+spec:
+        replicas: 2
+        selector:
+                matchLabels:
+                        app: medilab-front
+        template:
+                metadata:
+                        labels:
+                                app: medilab-front
+                spec:
+                        containers:
+                                - name: medilab-front
+                                  image: masrur121/medilab-front:latest
+                                  ports:
+                                          - containerPort: 3300
