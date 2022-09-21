@@ -1,21 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-        name: medilab-front
-        labels:
-                app: medilab-front
+  name: medilab-front
 spec:
-        replicas: 2
-        selector:
-                matchLabels:
-                        app: medilab-front
-        template:
-                metadata:
-                        labels:
-                                app: medilab-front
-                spec:
-                        containers:
-                                - name: medilab-front
-                                  image: masrur121/medilab-front:latest
-                                  ports:
-                                          - containerPort: 3300
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medilab-front
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: medilab-front
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: medilab-front
+        image: masrur121/medilab-front
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: medilab-front
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3000
+  selector:
+    app: medilab-front
