@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - khogu.tech
+    secretName: tls-secret-tw
+  rules:
+  - host: khogu.tech
+    http:
+      paths:
+      - path: /back
+        pathType: Prefix
+        backend:
+          service:
+            name: medilab-back
+            port:
+              number: 4400

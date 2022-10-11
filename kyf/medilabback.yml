@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+        name: medilab-back
+        labels:
+                app: medilab-back
+spec:
+        replicas: 1
+        selector:
+                matchLabels:
+                        app: medilab-back
+        template:
+                metadata:
+                        labels:
+                                app: medilab-back
+                spec:
+                        containers:
+                                - name: medilab-back
+                                  image: masrur121/medilab
+                                  ports:
+                                          - containerPort: 4400
+                                  env:
+                                          - name: redirect_url
+                                            value: http://127.0.0.1:3000
+                                          - name: DB_URL
+                                            value: mongodb://mas:mas@mongo:27017
