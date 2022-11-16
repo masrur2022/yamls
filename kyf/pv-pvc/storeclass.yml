@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: ibm-spectrum-scale-csi-lt
+provisioner: csi.hpe.com
+parameters:
+    volBackendFs: "fs1"
+    volDirBasePath: "pvfileset/lwdir" # relative path from filesystem mount point for creating lightweight volume
+reclaimPolicy: Delete
